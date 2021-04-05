@@ -1,0 +1,105 @@
+{
+    "apiVersion": "v1",
+    "kind": "Pod",
+    "metadata": {
+        "annotations": {
+            "openshift.io/scc": "anyuid"
+        },
+        "creationTimestamp": null,
+        "labels": {
+            "environment": "dev"
+        },
+        "name": "my-two-container-pod",
+        "selfLink": "/api/v1/namespaces/new/pods/my-two-container-pod"
+    },
+    "spec": {
+        "containers": [
+            {
+                "image": "nginx:1.13-alpine",
+                "imagePullPolicy": "IfNotPresent",
+                "name": "server",
+                "ports": [
+                    {
+                        "containerPort": 80,
+                        "protocol": "TCP"
+                    }
+                ],
+                "resources": {},
+                "securityContext": {
+                    "capabilities": {
+                        "drop": [
+                            "MKNOD"
+                        ]
+                    }
+                },
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "volumeMounts": [
+                    {
+                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                        "name": "default-token-vmxg2",
+                        "readOnly": true
+                    }
+                ]
+            },
+            {
+                "command": [
+                    "/usr/bin/tail",
+                    "-f",
+                    "/dev/null"
+                ],
+                "image": "alpine:latest",
+                "imagePullPolicy": "Always",
+                "name": "side-car",
+                "resources": {},
+                "securityContext": {
+                    "capabilities": {
+                        "drop": [
+                            "MKNOD"
+                        ]
+                    }
+                },
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "volumeMounts": [
+                    {
+                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                        "name": "default-token-vmxg2",
+                        "readOnly": true
+                    }
+                ]
+            }
+        ],
+        "dnsPolicy": "ClusterFirst",
+        "imagePullSecrets": [
+            {
+                "name": "default-dockercfg-w65db"
+            }
+        ],
+        "nodeName": "localhost",
+        "priority": 0,
+        "restartPolicy": "Never",
+        "schedulerName": "default-scheduler",
+        "securityContext": {
+            "seLinuxOptions": {
+                "level": "s0:c12,c9"
+            }
+        },
+        "serviceAccount": "default",
+        "serviceAccountName": "default",
+        "terminationGracePeriodSeconds": 30,
+        "volumes": [
+            {
+                "name": "default-token-vmxg2",
+                "secret": {
+                    "defaultMode": 420,
+                    "secretName": "default-token-vmxg2"
+                }
+            }
+        ]
+    },
+    "status": {
+        "phase": "Pending",
+        "qosClass": "BestEffort"
+    }
+}
